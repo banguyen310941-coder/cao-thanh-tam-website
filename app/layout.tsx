@@ -8,10 +8,15 @@ const display = Cormorant_Garamond({ subsets: ["latin", "vietnamese"], variable:
 const sans = Be_Vietnam_Pro({ subsets: ["latin", "vietnamese"], variable: "--font-sans", weight: ["300", "400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://cao-thanh-tam-website.vercel.app"),
-  title: { default: "Cao Thanh Tâm", template: "%s | Cao Thanh Tâm" },
-  description: "Website Cao Thanh Tâm — không gian trang trọng, hiện đại và giàu giá trị nhân văn.",
-  openGraph: { title: "Cao Thanh Tâm", description: "Không gian an yên, trang trọng và nhân văn.", type: "website", locale: "vi_VN" },
+  metadataBase: new URL("https://hoavienthienphucvinhhang.com.vn"),
+  title: { default: "Thiên Phúc Vĩnh Hằng Viên", template: "%s | Thiên Phúc Vĩnh Hằng Viên" },
+  description: "Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên tại Uông Bí - Yên Tử, Quảng Ninh.",
+  openGraph: {
+    title: "Thiên Phúc Vĩnh Hằng Viên",
+    description: "Không gian tưởng niệm sinh thái, trang trọng và bền vững giữa miền di sản Yên Tử.",
+    type: "website",
+    locale: "vi_VN",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
