@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getCmsData, saveCmsData, type CmsData } from "@/lib/cms";
+import { getCmsData, isBlobConfigured, saveCmsData, type CmsData } from "@/lib/cms";
 
 export const dynamic="force-dynamic";
 
 export async function GET(){
  const data=await getCmsData();
- return NextResponse.json({ok:true,data,storage:!!process.env.BLOB_READ_WRITE_TOKEN});
+ return NextResponse.json({ok:true,data,storage:isBlobConfigured()});
 }
 
 export async function PUT(request:Request){
