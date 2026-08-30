@@ -16,10 +16,22 @@ export const defaultCms: CmsData={
 
 const CMS_PATH="cms/data.json";
 
+function blobAuth(){
+ const token=process.env.BLOB_READ_WRITE_TOKEN;
+ if(token)return {token};
+ const oidcToken=process.env.VERCEL_OIDC_TOKEN;
+ const storeId=process.env.BLOB_STORE_ID;
+ if(oidcToken&&storeId)return {oidcToken,storeId};
+ return null;
+}
+
+export function isBlobConfigured(){return !!blobAuth()}
+
 export async function getCmsData():Promise<CmsData>{
- if(!process.env.BLOB_READ_WRITE_TOKEN)return defaultCms;
+ const auth=blobAuth();
+ if(!auth)return defaultCms;
  try{
-  const result=await list({prefix:CMS_PATH,limit:1});
+  const result=await list({prefix:CMS_PATH,limit:1,...auth});
   const found=result.blobs.find(b=>b.pathname===CMS_PATH);
   if(!found)return defaultCms;
   const res=await fetch(found.url,{cache:"no-store"});
@@ -30,7 +42,14 @@ export async function getCmsData():Promise<CmsData>{
 }
 
 export async function saveCmsData(data:CmsData){
- if(!process.env.BLOB_READ_WRITE_TOKEN)throw new Error("BLOB_NOT_CONFIGURED");
- await put(CMS_PATH,JSON.stringify(data),{access:"public",addRandomSuffix:false,allowOverwrite:true,contentType:"application/json"});
+ const auth=blobAuth();
+ if(!auth)throw new Error("BLOB_NOT_CONFIGURED");
+ await put(CMS_PATH,JSON.stringify(data),{access:"public",addRandomSuffix:false,allowOverwrite:true,contentType:"application/json",...auth});
  return data;
+}
+
+export function getBlobAuth(){
+ const auth=blobAuth();
+ if(!auth)throw new Error("BLOB_NOT_CONFIGURED");
+ return auth;
 }
