@@ -1,6 +1,6 @@
 {
   "name": "cao-thanh-tam-website",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,6 +16,7 @@
     "next": "16.2.9",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "sharp": "^0.34.3",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
