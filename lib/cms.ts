@@ -20,6 +20,19 @@ async function getBlobPhotos():Promise<CmsPhoto[]>{
  }catch{return []}
 }
 
+function recoverAlbums(base:CmsAlbum[],photos:CmsPhoto[]):CmsAlbum[]{
+ const byId=new Map(base.map(a=>[a.id,a]));
+ for(const p of photos){
+  if(byId.has(p.albumId))continue;
+  const timestamp=p.albumId.match(/^album-(\d+)$/)?.[1];
+  const createdAt=timestamp?new Date(Number(timestamp)).toISOString():p.createdAt;
+  const d=new Date(createdAt);
+  const label=Number.isNaN(d.getTime())?"Album khôi phục":`Album khôi phục ${d.toLocaleDateString("vi-VN")}`;
+  byId.set(p.albumId,{id:p.albumId,title:label,createdAt});
+ }
+ return Array.from(byId.values());
+}
+
 export async function getCmsData():Promise<CmsData>{
  let base:CmsData=defaultCms;
  if(isBlobConfigured()){
@@ -30,13 +43,16 @@ export async function getCmsData():Promise<CmsData>{
   }catch{}
  }
  const photos=await getBlobPhotos();
- return {...base,photos};
+ const albums=recoverAlbums(base.albums||[],photos);
+ return {...base,albums,photos};
 }
 
 export async function saveCmsData(data:CmsData){
  if(!isBlobConfigured())throw new Error("BLOB_NOT_CONFIGURED");
- const safe={...data,photos:[]};
+ const currentPhotos=await getBlobPhotos();
+ const albums=recoverAlbums(data.albums||[],currentPhotos);
+ const safe={...data,albums,photos:[]};
  await put(CMS_PATH,JSON.stringify(safe),{access:"public",addRandomSuffix:false,allowOverwrite:true,contentType:"application/json",...blobOptions()});
- return {...data,photos:await getBlobPhotos()};
+ return {...data,albums,photos:currentPhotos};
 }
 export function getBlobAuth(){if(!isBlobConfigured())throw new Error("BLOB_NOT_CONFIGURED");return blobOptions();}
