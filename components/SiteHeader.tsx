@@ -10,8 +10,8 @@ export default function SiteHeader(){
  const[open,setOpen]=useState(false);
  return <header className="site-header ref-header">
   <div className="shell nav">
-   <Link className="official-logo-link" href="/" aria-label="Trang chủ Thiên Phúc Vĩnh Hằng Viên">
-    <img className="official-logo" src={LOGO_URL} alt="Logo Thiên Phúc Vĩnh Hằng Viên" width="150" height="66" loading="eager" fetchPriority="high"/>
+   <Link className="official-logo-link" href="/" aria-label="Trang chủ Thiên Phúc Vĩnh Hằng Viên" style={{height:66,width:150,minWidth:150,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden",borderRadius:8,background:"#123f31",padding:"3px 10px"}}>
+    <img src={LOGO_URL} alt="Logo Thiên Phúc Vĩnh Hằng Viên" width="130" height="58" loading="eager" fetchPriority="high" style={{display:"block",width:130,height:58,objectFit:"contain"}}/>
    </Link>
    <nav className="navlinks" aria-label="Điều hướng chính">{links.map(([l,h])=><Link href={h} key={l}>{l}</Link>)}</nav>
    <a className="ref-phone" href="tel:0976074385" aria-label="Gọi hotline 0976 074 385"><Phone size={16}/> 0976 074 385</a>
