@@ -1,0 +1,7 @@
+import type { Metadata } from "next";
+import InnerHero from "@/components/InnerHero";
+import { Leaf, Trees, Landmark, Car, HeartHandshake, Sparkles } from "lucide-react";
+
+export const metadata: Metadata = { title: "Tiện ích", description: "Định hướng tiện ích và dịch vụ tại Cao Thanh Tâm." };
+const items=[[Trees,"Cảnh quan xanh","Mảng xanh, vườn hoa và lối dạo tạo cảm giác thư thái."],[Landmark,"Không gian tưởng niệm","Kiến trúc trang trọng, hài hòa với tổng thể cảnh quan."],[Car,"Khu đón tiếp & đỗ xe","Định hướng tổ chức giao thông thuận tiện cho gia đình."],[HeartHandshake,"Dịch vụ chăm sóc","Hỗ trợ gia đình trong quá trình tư vấn và thăm viếng."],[Leaf,"Vườn yên tĩnh","Các khoảng nghỉ được bố trí gần thiên nhiên."],[Sparkles,"Không gian nghi lễ","Bố trí linh hoạt cho các hoạt động tưởng niệm phù hợp."]];
+export default function AmenityPage(){return <main><InnerHero eyebrow="Trải nghiệm" title="Tiện ích & dịch vụ" description="Một hệ thống tiện ích được định hướng để hành trình thăm viếng nhẹ nhàng và trang trọng hơn."/><section className="section"><div className="shell"><div className="amenities">{items.map(([Icon,title,desc]:any)=><article className="amenity" key={title}><Icon size={26}/><h3>{title}</h3><p>{desc}</p></article>)}</div><p className="note">* Danh mục tiện ích đang là định hướng nội dung website và sẽ được cập nhật theo tài liệu chính thức.</p></div></section></main>}
