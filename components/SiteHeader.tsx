@@ -1,41 +1,6 @@
 "use client";
-
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
-
-const links = [
-  ["Giới thiệu", "/gioi-thieu"],
-  ["Sản phẩm", "/san-pham"],
-  ["Tiện ích", "/tien-ich"],
-  ["Thư viện", "/thu-vien"],
-  ["Tin tức", "/tin-tuc"],
-  ["Liên hệ", "/lien-he"],
-];
-
-export default function SiteHeader() {
-  const [open, setOpen] = useState(false);
-  return (
-    <header className="site-header">
-      <div className="shell nav">
-        <Link className="brand brand-lockup" href="/" aria-label="Thiên Phúc Vĩnh Hằng Viên">
-          <span className="brand-mark">TP</span>
-          <span className="brand-text"><strong>THIÊN PHÚC</strong><small>VĨNH HẰNG VIÊN</small></span>
-        </Link>
-        <nav className="navlinks" aria-label="Điều hướng chính">
-          {links.map(([label, href]) => <Link href={href} key={href}>{label}</Link>)}
-        </nav>
-        <Link className="btn btn-gold nav-contact" href="/lien-he">Đăng ký tư vấn</Link>
-        <button className="mobile-menu-button" aria-label="Mở menu" onClick={() => setOpen(v => !v)}>
-          {open ? <X size={24}/> : <Menu size={24}/>} 
-        </button>
-      </div>
-      {open && <div className="mobile-panel">
-        <nav className="shell mobile-links">
-          {links.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}
-          <Link className="btn btn-gold" href="/lien-he" onClick={() => setOpen(false)}>Đăng ký tư vấn</Link>
-        </nav>
-      </div>}
-    </header>
-  );
-}
+const links=[["TRANG CHỦ","/"],["GIỚI THIỆU","/gioi-thieu"],["VỊ TRÍ","/gioi-thieu"],["QUY HOẠCH","/gioi-thieu"],["SẢN PHẨM","/san-pham"],["TIỆN ÍCH & DỊCH VỤ","/tien-ich"],["TIẾN ĐỘ","/tin-tuc"],["TIN TỨC","/tin-tuc"],["LIÊN HỆ","/lien-he"]];
+export default function SiteHeader(){const[open,setOpen]=useState(false);return <header className="site-header ref-header"><div className="shell nav"><Link className="brand brand-lockup" href="/"><span className="brand-lotus">♧</span><span className="brand-text"><strong>THIÊN PHÚC</strong><small>VĨNH HẰNG VIÊN</small></span></Link><nav className="navlinks">{links.map(([l,h])=><Link href={h} key={l}>{l}</Link>)}</nav><Link className="ref-phone" href="/lien-he"><Phone size={16}/> LIÊN HỆ</Link><button className="mobile-menu-button" aria-label="Menu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></div>{open&&<div className="mobile-panel"><nav className="shell mobile-links">{links.map(([l,h])=><Link href={h} key={l} onClick={()=>setOpen(false)}>{l}</Link>)}</nav></div>}</header>}
