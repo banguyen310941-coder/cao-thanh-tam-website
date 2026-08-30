@@ -18,7 +18,10 @@ export default function SiteHeader() {
   return (
     <header className="site-header">
       <div className="shell nav">
-        <Link className="brand" href="/">CAO THANH TÂM</Link>
+        <Link className="brand brand-lockup" href="/" aria-label="Thiên Phúc Vĩnh Hằng Viên">
+          <span className="brand-mark">TP</span>
+          <span className="brand-text"><strong>THIÊN PHÚC</strong><small>VĨNH HẰNG VIÊN</small></span>
+        </Link>
         <nav className="navlinks" aria-label="Điều hướng chính">
           {links.map(([label, href]) => <Link href={href} key={href}>{label}</Link>)}
         </nav>
