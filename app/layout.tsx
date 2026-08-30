@@ -4,6 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 import "./homepage.css";
+import "./cms.css";
 
 const display = Cormorant_Garamond({ subsets: ["latin", "vietnamese"], variable: "--font-display", weight: ["500", "600", "700"] });
 const sans = Be_Vietnam_Pro({ subsets: ["latin", "vietnamese"], variable: "--font-sans", weight: ["300", "400", "500", "600", "700"] });
