@@ -10,19 +10,33 @@ export const defaultCms:CmsData={home:{heroTitle:"THIÊN PHÚC VĨNH HẰNG VIÊ
 const CMS_PATH="cms/data.json";
 function blobOptions(){const token=process.env.BLOB_READ_WRITE_TOKEN;return token?{token}:{};}
 export function isBlobConfigured(){return !!(process.env.BLOB_STORE_ID||process.env.BLOB_READ_WRITE_TOKEN);}
+function cleanName(pathname:string){const raw=pathname.split("/").pop()||pathname;return raw.replace(/^\d+-/,"");}
+
+async function getBlobPhotos():Promise<CmsPhoto[]>{
+ if(!isBlobConfigured())return [];
+ try{
+  const result=await list({prefix:"albums/",limit:1000,...blobOptions()});
+  return result.blobs.map((b:any)=>{const parts=b.pathname.split("/");return {id:b.pathname,url:b.url,name:cleanName(b.pathname),albumId:parts[1]||"",createdAt:b.uploadedAt?new Date(b.uploadedAt).toISOString():new Date().toISOString()}}).filter(p=>p.albumId);
+ }catch{return []}
+}
 
 export async function getCmsData():Promise<CmsData>{
- if(!isBlobConfigured())return defaultCms;
- try{
-  const result=await list({prefix:CMS_PATH,limit:1,...blobOptions()});
-  const found=result.blobs.find(b=>b.pathname===CMS_PATH);
-  if(!found)return defaultCms;
-  const separator=found.url.includes("?")?"&":"?";
-  const res=await fetch(`${found.url}${separator}v=${Date.now()}`,{cache:"no-store",headers:{"cache-control":"no-cache"}});
-  if(!res.ok)return defaultCms;
-  const json=await res.json();
-  return {...defaultCms,...json,home:{...defaultCms.home,...json.home}};
- }catch{return defaultCms}
+ let base:CmsData=defaultCms;
+ if(isBlobConfigured()){
+  try{
+   const result=await list({prefix:CMS_PATH,limit:1,...blobOptions()});
+   const found=result.blobs.find(b=>b.pathname===CMS_PATH);
+   if(found){const separator=found.url.includes("?")?"&":"?";const res=await fetch(`${found.url}${separator}v=${Date.now()}`,{cache:"no-store",headers:{"cache-control":"no-cache"}});if(res.ok){const json=await res.json();base={...defaultCms,...json,home:{...defaultCms.home,...json.home}}}}
+  }catch{}
+ }
+ const photos=await getBlobPhotos();
+ return {...base,photos};
 }
-export async function saveCmsData(data:CmsData){if(!isBlobConfigured())throw new Error("BLOB_NOT_CONFIGURED");await put(CMS_PATH,JSON.stringify(data),{access:"public",addRandomSuffix:false,allowOverwrite:true,contentType:"application/json",...blobOptions()});return data;}
+
+export async function saveCmsData(data:CmsData){
+ if(!isBlobConfigured())throw new Error("BLOB_NOT_CONFIGURED");
+ const safe={...data,photos:[]};
+ await put(CMS_PATH,JSON.stringify(safe),{access:"public",addRandomSuffix:false,allowOverwrite:true,contentType:"application/json",...blobOptions()});
+ return {...data,photos:await getBlobPhotos()};
+}
 export function getBlobAuth(){if(!isBlobConfigured())throw new Error("BLOB_NOT_CONFIGURED");return blobOptions();}
