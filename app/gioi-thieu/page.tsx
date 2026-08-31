@@ -2,152 +2,54 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import InnerHero from "@/components/InnerHero";
-import { getCmsData } from "@/lib/cms";
+import { getCmsData, type CmsPhoto } from "@/lib/cms";
 
 export const dynamic = "force-dynamic";
-
 const siteUrl = "https://www.hoavienthienphucvinhhang.com.vn";
 const pageUrl = `${siteUrl}/gioi-thieu`;
 const seoTitle = "Giới thiệu Thiên Phúc Vĩnh Hằng Viên | Công viên nghĩa trang Quảng Ninh";
 const seoDescription = "Giới thiệu Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên tại Uông Bí – Yên Tử, Quảng Ninh: quy mô 32,54 ha, vốn đầu tư khoảng 451 tỷ đồng, định hướng sinh thái, hiện đại và nhân văn.";
 
-export const metadata: Metadata = {
-  title: seoTitle,
-  description: seoDescription,
-  keywords: [
-    "Thiên Phúc Vĩnh Hằng Viên",
-    "Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên",
-    "nghĩa trang Quảng Ninh",
-    "công viên nghĩa trang Quảng Ninh",
-    "nghĩa trang Uông Bí",
-    "nghĩa trang Yên Tử",
-    "công viên nghĩa trang Uông Bí",
-    "Long Hải Quảng Ninh",
-  ],
-  alternates: { canonical: pageUrl },
-  openGraph: {
-    type: "article",
-    locale: "vi_VN",
-    url: pageUrl,
-    siteName: "Thiên Phúc Vĩnh Hằng Viên",
-    title: seoTitle,
-    description: seoDescription,
-  },
-  twitter: { card: "summary_large_image", title: seoTitle, description: seoDescription },
-  robots: { index: true, follow: true },
-};
+export const metadata: Metadata = {title:seoTitle,description:seoDescription,keywords:["Thiên Phúc Vĩnh Hằng Viên","Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên","công viên nghĩa trang Quảng Ninh","nghĩa trang Uông Bí","nghĩa trang Yên Tử"],alternates:{canonical:pageUrl},openGraph:{type:"article",locale:"vi_VN",url:pageUrl,siteName:"Thiên Phúc Vĩnh Hằng Viên",title:seoTitle,description:seoDescription},twitter:{card:"summary_large_image",title:seoTitle,description:seoDescription},robots:{index:true,follow:true}};
+const norm=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").toLowerCase();
 
-const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").toLowerCase();
+function Picture({photo,alt,wide=false}:{photo?:CmsPhoto;alt:string;wide?:boolean}){if(!photo)return null;return <figure className={wide?"about-photo about-photo-wide":"about-photo"}><Image src={photo.url} alt={alt} fill sizes={wide?"(max-width:900px) 100vw, 1100px":"(max-width:900px) 100vw, 50vw"} style={{objectFit:"cover"}}/><figcaption>{alt}</figcaption></figure>}
 
-export default async function AboutPage() {
-  const cms = await getCmsData();
-  const album = cms.albums.find((a) => norm(a.title).includes("cong trinh kien truc"));
-  const photos = album ? cms.photos.filter((p) => p.albumId === album.id) : [];
-  const heroImage = photos[0]?.url;
+export default async function AboutPage(){
+ const cms=await getCmsData();
+ const by=(names:string[])=>{const a=cms.albums.find(x=>names.some(n=>norm(x.title).includes(norm(n))));return a?cms.photos.filter(p=>p.albumId===a.id):[]};
+ const architecture=by(["công trình kiến trúc"]), planning=by(["mặt bằng tổng thể"]), location=by(["vị trí"]), products=by(["mẫu mộ"]), progress=by(["tiến độ thi công"]);
+ const pool=[...architecture,...planning,...location,...products,...progress];
+ const img=(i:number)=>pool[i%Math.max(pool.length,1)];
+ const jsonLd={"@context":"https://schema.org","@type":"Article",headline:"Giới thiệu Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên",description:seoDescription,mainEntityOfPage:pageUrl,inLanguage:"vi-VN",publisher:{"@type":"Organization",name:"Thiên Phúc Vĩnh Hằng Viên",url:siteUrl},...(pool[0]?{image:[pool[0].url]}:{})};
+ return <main className="about-seo-page">
+  <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonLd)}}/>
+  <InnerHero eyebrow="Công viên nghĩa trang sinh thái tại Quảng Ninh" title="Giới thiệu Thiên Phúc Vĩnh Hằng Viên" description="Không gian an nghỉ thanh tịnh, được quy hoạch đồng bộ giữa cảnh quan sinh thái, giá trị tâm linh và nhu cầu tưởng niệm lâu dài tại Uông Bí – Yên Tử, Quảng Ninh."/>
+  <article className="about-article">
+   <section className="about-intro"><div className="shell about-intro-grid"><div><span className="eyebrow">Tổng quan dự án</span><h1>Thiên Phúc Vĩnh Hằng Viên – không gian tưởng niệm giữa miền di sản</h1><p className="about-lead"><strong>Thiên Phúc Vĩnh Hằng Viên</strong> là dự án công viên nghĩa trang tại phường Uông Bí và phường Yên Tử, tỉnh Quảng Ninh, do <strong>Công ty Cổ phần Long Hải Quảng Ninh</strong> làm chủ đầu tư.</p><p>Dự án có quy mô khoảng <strong>32,54 ha</strong>, tổng mức đầu tư khoảng <strong>451 tỷ đồng</strong>, khởi động ngày <strong>02/06/2026</strong> và dự kiến hoàn thành trong <strong>Quý II/2028</strong>. Định hướng phát triển tập trung vào một không gian an nghỉ có quy hoạch, cảnh quan xanh và hạ tầng đồng bộ.</p></div><Picture photo={architecture[0]||planning[0]||img(0)} alt="Không gian Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên"/></div></section>
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: "Giới thiệu Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên",
-    description: seoDescription,
-    mainEntityOfPage: pageUrl,
-    inLanguage: "vi-VN",
-    author: { "@type": "Organization", name: "Thiên Phúc Vĩnh Hằng Viên", url: siteUrl },
-    publisher: { "@type": "Organization", name: "Thiên Phúc Vĩnh Hằng Viên", url: siteUrl },
-    ...(heroImage ? { image: [heroImage] } : {}),
-    about: {
-      "@type": "Place",
-      name: "Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên",
-      address: { "@type": "PostalAddress", addressLocality: "Uông Bí – Yên Tử", addressRegion: "Quảng Ninh", addressCountry: "VN" },
-    },
-  };
+   <section className="about-stats"><div className="shell about-stat-grid"><div><strong>32,54 ha</strong><span>Quy mô dự án</span></div><div><strong>~451 tỷ đồng</strong><span>Tổng mức đầu tư</span></div><div><strong>02/06/2026</strong><span>Khởi động dự án</span></div><div><strong>Q2/2028</strong><span>Dự kiến hoàn thành</span></div></div></section>
 
-  return (
-    <main className="about-seo-page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <InnerHero
-        eyebrow="Công viên nghĩa trang sinh thái tại Quảng Ninh"
-        title="Giới thiệu Thiên Phúc Vĩnh Hằng Viên"
-        description="Không gian an nghỉ được định hướng theo mô hình nghĩa trang tập trung, hiện đại, đồng bộ hạ tầng, hài hòa giữa giá trị tâm linh truyền thống và cảnh quan sinh thái tại Uông Bí – Yên Tử, Quảng Ninh."
-      />
+   <section className="about-block"><div className="shell about-reading"><span className="eyebrow">Tầm nhìn phát triển</span><h2>Từ nghĩa trang truyền thống đến công viên nghĩa trang sinh thái, văn minh</h2><p>Trong quá trình đô thị hóa, nhu cầu về một hệ thống nghĩa trang tập trung, có quy hoạch và được đầu tư hạ tầng đồng bộ ngày càng rõ ràng. Một công viên nghĩa trang hiện đại không đơn thuần là nơi an táng. Đây còn là không gian tưởng niệm để các thế hệ trong gia đình trở về tri ân người đã khuất trong môi trường trang nghiêm, sạch sẽ và có cảnh quan được chăm sóc lâu dài.</p><p>Thiên Phúc Vĩnh Hằng Viên được định hướng theo mô hình nghĩa trang tập trung, kết hợp giữa hạ tầng kỹ thuật, cây xanh, công trình kiến trúc và các không gian phục vụ hoạt động tưởng niệm. Cách tổ chức này giúp hạn chế cảm giác nặng nề thường thấy ở các khu nghĩa trang nhỏ lẻ, đồng thời tạo nên một tổng thể có trật tự, thuận tiện cho việc thăm viếng và quản lý.</p><Picture photo={planning[0]||img(1)} alt="Quy hoạch tổng thể Thiên Phúc Vĩnh Hằng Viên" wide/></div></section>
 
-      <article>
-        <section className="section">
-          <div className="shell two">
-            <div>
-              <span className="eyebrow">Tổng quan dự án</span>
-              <h1 className="section-title">Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên – không gian tưởng niệm giữa miền di sản Quảng Ninh</h1>
-              <p className="lead"><strong>Thiên Phúc Vĩnh Hằng Viên</strong> là dự án công viên nghĩa trang được triển khai trên địa bàn phường Uông Bí và phường Yên Tử, tỉnh Quảng Ninh. Dự án do <strong>Công ty Cổ phần Long Hải Quảng Ninh</strong> làm chủ đầu tư, có quy mô khoảng <strong>32,54 ha</strong> và tổng mức đầu tư khoảng <strong>451 tỷ đồng</strong>.</p>
-              <p className="lead">Theo thông tin được cơ quan địa phương công bố tại lễ khởi động ngày 02/06/2026, dự án được định hướng xây dựng thành nghĩa trang tập trung, hiện đại, đồng bộ về hạ tầng kỹ thuật, kết hợp hài hòa giữa yếu tố tâm linh truyền thống với cảnh quan sinh thái. Công trình dự kiến hoàn thành và đưa vào hoạt động trong <strong>Quý II/2028</strong>.</p>
-            </div>
-            {heroImage ? <div style={{ position: "relative", minHeight: 420, borderRadius: 20, overflow: "hidden" }}><Image src={heroImage} alt="Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên tại Uông Bí Yên Tử Quảng Ninh" fill priority sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div> : <div className="quote-panel"><p>“Một không gian tưởng niệm cần sự trang nghiêm, thanh tịnh, đồng bộ và bền vững theo thời gian.”</p></div>}
-          </div>
-        </section>
+   <section className="about-block about-soft"><div className="shell about-split"><Picture photo={location[0]||img(2)} alt="Vị trí dự án Thiên Phúc Vĩnh Hằng Viên tại Uông Bí – Yên Tử"/><div className="about-reading compact"><span className="eyebrow">Vị trí dự án</span><h2>Uông Bí – Yên Tử: không gian gắn với giá trị văn hóa và tâm linh</h2><p>Dự án nằm trên địa bàn phường Uông Bí và phường Yên Tử, tỉnh Quảng Ninh. Đây là khu vực gắn với một vùng văn hóa – tâm linh đặc biệt của miền Đông Bắc, vì vậy yếu tố cảnh quan, sự thanh tịnh và tính trang nghiêm có ý nghĩa quan trọng trong quá trình hình thành không gian tưởng niệm.</p><p>Đối với một gia đình, nơi an nghỉ không chỉ được cân nhắc qua khoảng cách địa lý. Môi trường xung quanh, tổ chức giao thông, không gian cây xanh và sự thuận tiện khi thăm viếng đều là những yếu tố cần nhìn trong dài hạn.</p><Link className="about-link" href="/vi-tri">Xem chi tiết vị trí →</Link></div></div></section>
 
-        <section className="section soft"><div className="shell values-grid">
-          <article><b>32,54 ha</b><h2>Quy mô dự án</h2><p>Không gian quy hoạch tập trung cho hạ tầng, cảnh quan, công trình tâm linh và các khu chức năng phục vụ nhu cầu an táng.</p></article>
-          <article><b>~451 tỷ đồng</b><h2>Tổng mức đầu tư</h2><p>Nguồn lực đầu tư cho hệ thống hạ tầng kỹ thuật, cảnh quan và các công trình chức năng của dự án.</p></article>
-          <article><b>02/06/2026</b><h2>Lễ khởi động</h2><p>Dấu mốc mở đầu giai đoạn triển khai mới của Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên.</p></article>
-          <article><b>Q2/2028</b><h2>Dự kiến hoàn thành</h2><p>Thời điểm dự kiến công trình hoàn thành và đưa vào hoạt động theo thông tin công bố của địa phương.</p></article>
-        </div></section>
+   <section className="about-block"><div className="shell about-reading"><span className="eyebrow">Quy hoạch đồng bộ</span><h2>Quy mô 32,54 ha tạo nền tảng cho một không gian được tổ chức bài bản</h2><p>Quy mô khoảng 32,54 ha tạo điều kiện để dự án tổ chức hệ thống hạ tầng, cảnh quan và các khu chức năng trong cùng một tổng thể. Thay vì phát triển tự phát, đường nội khu, thoát nước, cây xanh, công trình phụ trợ và các khu an táng được định hướng theo quy hoạch chung.</p><p>Điểm quan trọng của mô hình công viên nghĩa trang là tính đồng bộ. Cây xanh và cảnh quan không chỉ mang giá trị thẩm mỹ mà còn tạo khoảng đệm, cải thiện cảm nhận không gian và góp phần duy trì sự trang nghiêm. Với công trình có vòng đời sử dụng lâu dài, chất lượng quy hoạch ngay từ đầu là yếu tố đặc biệt quan trọng.</p><Picture photo={planning[1]||architecture[1]||img(3)} alt="Cảnh quan và quy hoạch Thiên Phúc Vĩnh Hằng Viên" wide/><div className="about-callout"><strong>Định hướng cốt lõi</strong><p>Thanh tịnh trong cảnh quan · Trang nghiêm trong tưởng niệm · Đồng bộ trong hạ tầng · Bền vững theo thời gian.</p></div></div></section>
 
-        <section className="section"><div className="shell prose-content">
-          <span className="eyebrow">Tầm nhìn phát triển</span>
-          <h2 className="section-title">Từ nghĩa trang truyền thống đến công viên nghĩa trang sinh thái, văn minh</h2>
-          <p>Trong quá trình đô thị hóa, nhu cầu về một hệ thống nghĩa trang tập trung, có quy hoạch và được đầu tư hạ tầng đồng bộ ngày càng trở nên rõ ràng. Một công viên nghĩa trang hiện đại không đơn thuần là nơi an táng. Đó còn là không gian tưởng niệm, nơi các thế hệ trong gia đình có thể trở về tri ân người đã khuất trong một môi trường trang nghiêm, sạch sẽ, có cảnh quan và được tổ chức khoa học.</p>
-          <p>Thiên Phúc Vĩnh Hằng Viên được phát triển trong bối cảnh Quảng Ninh đang từng bước chuyển đổi hệ thống nghĩa trang từ mô hình nhỏ lẻ, phân tán sang các khu nghĩa trang tập trung và công viên nghĩa trang có hạ tầng kỹ thuật đồng bộ. Định hướng này góp phần sử dụng quỹ đất hiệu quả hơn, giảm tác động môi trường và tạo sự đồng bộ với quá trình phát triển đô thị.</p>
-          <p>Với dự án tại Uông Bí – Yên Tử, yếu tố sinh thái được đặt song hành với giá trị tâm linh truyền thống. Không gian cây xanh, mặt nước, đường nội khu và các công trình kiến trúc được định hướng tạo thành một tổng thể thống nhất. Mục tiêu không phải tạo cảm giác nặng nề của một nghĩa trang khép kín, mà hướng tới một không gian tưởng niệm thanh tịnh, có chiều sâu văn hóa và phù hợp với cảnh quan địa phương.</p>
+   <section className="about-block about-green"><div className="shell about-reading"><span className="eyebrow">Giá trị nhân văn</span><h2>Không gian an nghỉ cũng là nơi gìn giữ ký ức gia đình</h2><p>Trong văn hóa Việt Nam, tưởng nhớ tổ tiên là một phần quan trọng của đời sống tinh thần. Vì vậy, nơi an nghỉ của người thân không chỉ cần đáp ứng nhu cầu an táng mà còn cần tạo điều kiện để con cháu trở về thăm viếng, chăm sóc và duy trì mối liên hệ giữa các thế hệ.</p><p>Một không gian được tổ chức trang trọng, có lối đi thuận tiện, cảnh quan hài hòa và dịch vụ quản lý ổn định giúp những dịp tưởng niệm trở nên nhẹ nhàng hơn. Đây cũng là lý do các mô hình công viên nghĩa trang ngày càng chú trọng đến trải nghiệm của người đang sống bên cạnh sự tôn nghiêm dành cho người đã khuất.</p></div></section>
 
-          <h2>Vị trí tại Uông Bí – Yên Tử và giá trị của không gian tâm linh</h2>
-          <p>Dự án nằm trên địa bàn hai phường Uông Bí và Yên Tử, tỉnh Quảng Ninh. Đây là khu vực gắn với một vùng văn hóa – tâm linh đặc biệt của miền Đông Bắc. Yên Tử từ lâu được biết đến như một không gian có giá trị lớn về lịch sử, văn hóa và đời sống tinh thần. Vì vậy, việc tổ chức một công viên nghĩa trang tại khu vực này đòi hỏi sự hài hòa giữa công năng sử dụng, cảnh quan, môi trường và tính trang nghiêm.</p>
-          <p>Đối với các gia đình, vị trí của nơi an nghỉ không chỉ được nhìn nhận qua khoảng cách địa lý. Sự thuận tiện trong hành trình thăm viếng, môi trường xung quanh, không gian cây xanh, tổ chức giao thông nội khu và cảm giác thanh tịnh đều là những yếu tố cần cân nhắc lâu dài. Một nơi an nghỉ được quy hoạch bài bản giúp hoạt động tưởng niệm vào ngày giỗ, tiết Thanh Minh hay các dịp truyền thống trở nên thuận tiện và trang trọng hơn.</p>
-          <p>Thiên Phúc Vĩnh Hằng Viên vì thế được định hướng như một phần của hệ thống hạ tầng xã hội tại khu vực phía Tây Quảng Ninh, đáp ứng nhu cầu an táng của người dân địa phương và khu vực lân cận. Khi hoàn thiện, dự án được kỳ vọng góp phần thay thế dần mô hình nghĩa trang nhỏ lẻ, đồng thời hình thành không gian xanh, sạch và có quản lý tập trung.</p>
+   <section className="about-block"><div className="shell about-split"><div className="about-reading compact"><span className="eyebrow">Kiến trúc & cảnh quan</span><h2>Hài hòa giữa công trình, cây xanh và không gian tâm linh</h2><p>Thiên Phúc Vĩnh Hằng Viên hướng tới một tổng thể trong đó kiến trúc không tách rời cảnh quan. Các khu vực chức năng cần có sự liên kết bằng hệ thống giao thông nội khu, cây xanh và những khoảng không gian mở, từ đó tạo cảm giác thanh tịnh và dễ tiếp cận.</p><p>Việc sử dụng cảnh quan như một thành phần quan trọng của dự án còn giúp khu tưởng niệm có chiều sâu hơn về mặt thẩm mỹ, giảm sự khô cứng và tạo môi trường phù hợp cho những khoảnh khắc tưởng nhớ.</p></div><Picture photo={architecture[2]||architecture[0]||img(4)} alt="Kiến trúc cảnh quan tại Thiên Phúc Vĩnh Hằng Viên"/></div></section>
 
-          <h2>Quy mô 32,54 ha và định hướng quy hoạch đồng bộ</h2>
-          <p>Quy mô khoảng 32,54 ha tạo điều kiện để dự án tổ chức nhiều nhóm chức năng trong cùng một tổng thể. Theo các thông tin đã được địa phương công bố trong quá trình triển khai, dự án có định hướng bố trí các hạng mục phục vụ tang lễ, lưu giữ tro cốt, không gian cây xanh, hồ điều hòa, bãi đỗ xe, đường giao thông và các công trình phụ trợ. Việc bố trí cụ thể được thực hiện theo hồ sơ quy hoạch và quá trình triển khai thực tế của dự án.</p>
-          <p>Điểm quan trọng của mô hình công viên nghĩa trang là tính đồng bộ. Thay vì các phần mộ hình thành tự phát, hạ tầng giao thông, thoát nước, cây xanh và các khu chức năng được tổ chức từ quy hoạch tổng thể. Điều này giúp không gian có trật tự, thuận tiện cho việc chăm sóc, thăm viếng và quản lý lâu dài.</p>
-          <p>Quy hoạch đồng bộ cũng tạo điều kiện dành tỷ lệ phù hợp cho cảnh quan. Cây xanh và mặt nước không chỉ có giá trị thẩm mỹ mà còn giúp tạo khoảng đệm, cải thiện vi khí hậu và giảm cảm giác khô cứng của các công trình xây dựng. Với một dự án có vòng đời sử dụng dài, chất lượng cảnh quan và khả năng duy trì cảnh quan theo thời gian là những yếu tố đặc biệt quan trọng.</p>
+   {products.length>0&&<section className="about-gallery-section about-soft"><div className="shell"><div className="about-section-head"><span className="eyebrow">Không gian sản phẩm</span><h2>Một số hình ảnh trong album dự án</h2><p>Hình ảnh được lấy trực tiếp từ thư viện CMS của website để người xem có thêm góc nhìn trực quan.</p></div><div className="about-gallery">{products.slice(0,3).map((p,i)=><Picture key={p.id} photo={p} alt={`Không gian mẫu mộ Thiên Phúc Vĩnh Hằng Viên ${i+1}`}/>)}</div></div></section>}
 
-          <h2>Hạ tầng kỹ thuật và yêu cầu bảo vệ môi trường</h2>
-          <p>Một nghĩa trang tập trung hiện đại phải được xem xét như một hệ thống hạ tầng hoàn chỉnh. Đường giao thông nội khu cần phục vụ việc di chuyển của gia đình và các hoạt động vận hành. Hệ thống thoát nước, xử lý chất thải, cây xanh, bãi đỗ xe và các công trình dịch vụ cần được tổ chức phù hợp với quy hoạch, tiêu chuẩn xây dựng và quy định về môi trường.</p>
-          <p>Tại lễ khởi động dự án, chính quyền địa phương nhấn mạnh yêu cầu chủ đầu tư và các đơn vị thi công thực hiện nghiêm các cam kết về tiến độ, chất lượng công trình, an toàn lao động, phòng cháy chữa cháy và bảo vệ môi trường. Đây là những yêu cầu nền tảng đối với một dự án có tính chất đặc thù và có ảnh hưởng lâu dài đến cộng đồng.</p>
-          <p>Về mặt xã hội, việc phát triển nghĩa trang tập trung còn có ý nghĩa giảm dần tình trạng các khu chôn cất nhỏ lẻ, sử dụng đất manh mún và khó kiểm soát về môi trường. Khi được vận hành đúng quy định, mô hình công viên nghĩa trang có thể hỗ trợ quản lý quỹ đất tốt hơn, đồng thời tạo điều kiện chuẩn hóa các hoạt động tang lễ và tưởng niệm theo hướng văn minh.</p>
+   <section className="about-block"><div className="shell about-reading"><span className="eyebrow">Chủ đầu tư & tiến độ</span><h2>Dự án do Công ty Cổ phần Long Hải Quảng Ninh làm chủ đầu tư</h2><p>Theo thông tin công bố, dự án được khởi động ngày 02/06/2026 và dự kiến hoàn thành trong Quý II/2028. Trong thời gian triển khai, khách hàng quan tâm nên theo dõi các cập nhật chính thức về tiến độ, quy hoạch và những hạng mục đã hoàn thiện thay vì chỉ dựa vào hình ảnh giới thiệu.</p><p>Website sẽ tiếp tục cập nhật hình ảnh thực tế từ album tiến độ khi có dữ liệu mới, giúp người xem dễ theo dõi sự thay đổi của dự án theo từng giai đoạn.</p>{progress[0]&&<Picture photo={progress[0]} alt="Tiến độ thi công Thiên Phúc Vĩnh Hằng Viên" wide/>}<div className="about-links"><Link href="/quy-hoach">Xem quy hoạch</Link><Link href="/san-pham">Xem sản phẩm</Link><Link href="/tien-do">Theo dõi tiến độ</Link></div></div></section>
 
-          <h2>Giá trị tâm linh truyền thống trong một không gian hiện đại</h2>
-          <p>Người Việt coi trọng đạo lý uống nước nhớ nguồn và việc chăm sóc nơi an nghỉ của tổ tiên. Bởi vậy, một công viên nghĩa trang dù được đầu tư theo tiêu chuẩn hiện đại vẫn cần giữ được sự gần gũi với văn hóa tưởng niệm truyền thống. Yếu tố hiện đại ở đây không có nghĩa là thay thế truyền thống, mà là sử dụng quy hoạch, kiến trúc và dịch vụ để hỗ trợ các nghi thức được thực hiện trang trọng, thuận tiện hơn.</p>
-          <p>Các không gian tâm linh, khu tưởng niệm, cây xanh và kiến trúc cảnh quan cần tạo cảm giác tĩnh tại. Sự tiết chế trong hình thức, tính cân đối trong bố cục và sự hài hòa với thiên nhiên có thể giúp gia đình cảm nhận được sự bình an khi đến thăm viếng. Đây cũng là lý do khái niệm “công viên nghĩa trang” ngày càng được quan tâm: cảnh quan trở thành một phần quan trọng của trải nghiệm tưởng niệm.</p>
-          <p>Đối với Thiên Phúc Vĩnh Hằng Viên, định hướng kết hợp yếu tố tâm linh truyền thống với cảnh quan sinh thái đã được nêu trong thông tin chính thức về dự án. Đây là nền tảng để hình thành một không gian vừa đáp ứng công năng an táng, vừa có khả năng duy trì giá trị tinh thần và cảnh quan trong thời gian dài.</p>
-
-          <h2>Chủ đầu tư Công ty Cổ phần Long Hải Quảng Ninh</h2>
-          <p>Công ty Cổ phần Long Hải Quảng Ninh là chủ đầu tư triển khai Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên. Theo thông tin từ địa phương, doanh nghiệp đã tham gia quá trình thực hiện các thủ tục quy hoạch, giải phóng mặt bằng, thiết kế, đánh giá tác động môi trường và triển khai một số hạng mục của dự án trong những năm trước khi lễ khởi động giai đoạn mới được tổ chức vào tháng 6/2026.</p>
-          <p>Dự án đã trải qua một quá trình chuẩn bị kéo dài với nhiều thủ tục và vướng mắc cần tháo gỡ. Việc tổ chức lễ khởi động ngày 02/06/2026 vì vậy là dấu mốc quan trọng, thể hiện việc dự án bước sang giai đoạn triển khai với yêu cầu rõ ràng hơn về tiến độ, chất lượng và sự phối hợp giữa chủ đầu tư với chính quyền địa phương.</p>
-          <p>Trong quá trình tiếp theo, thông tin về các hạng mục, tiến độ thi công và hình ảnh thực tế cần được cập nhật minh bạch theo từng giai đoạn. Website Thiên Phúc Vĩnh Hằng Viên sẽ ưu tiên sử dụng hình ảnh dự án và dữ liệu được cập nhật để người quan tâm có thể theo dõi quá trình hình thành công viên nghĩa trang.</p>
-
-          <h2>Tiến độ từ lễ khởi động năm 2026 đến mục tiêu Quý II/2028</h2>
-          <p>Ngày 02/06/2026, lễ khởi động Dự án Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên được tổ chức với sự tham dự của đại diện chính quyền hai phường Uông Bí, Yên Tử, chủ đầu tư, đối tác và người dân. Theo thông tin công bố, dự án dự kiến hoàn thành và đưa vào hoạt động trong Quý II/2028.</p>
-          <p>Khoảng thời gian triển khai này là giai đoạn quan trọng để hoàn thiện hạ tầng, cảnh quan và các công trình theo quy hoạch. Tiến độ thực tế có thể được cập nhật theo quá trình thi công, thủ tục liên quan và điều kiện triển khai. Vì vậy, người quan tâm nên theo dõi mục <Link href="/tien-do">Tiến độ dự án</Link> để xem những thông tin và hình ảnh mới được công bố trên website.</p>
-          <p>Việc công khai tiến độ bằng hình ảnh thực tế giúp khách hàng và gia đình có cơ sở trực quan hơn khi tìm hiểu dự án. Đây cũng là nguyên tắc mà website hướng tới: phân biệt rõ hình ảnh thực tế, hình ảnh quy hoạch và phối cảnh minh họa, hạn chế gây nhầm lẫn về tình trạng hoàn thiện của từng hạng mục.</p>
-
-          <h2>Vì sao mô hình công viên nghĩa trang ngày càng được quan tâm?</h2>
-          <p>Đối với nhiều gia đình, lựa chọn nơi an nghỉ là một quyết định có tính dài hạn qua nhiều thế hệ. Ngoài yếu tố vị trí, người tìm hiểu thường quan tâm đến quy hoạch, cảnh quan, khả năng chăm sóc, sự thuận tiện khi thăm viếng và tính ổn định của khu vực. Mô hình công viên nghĩa trang tập trung có lợi thế ở khả năng tổ chức những yếu tố này trong cùng một hệ thống.</p>
-          <p>Từ góc độ đô thị, nghĩa trang tập trung giúp giảm tình trạng chôn cất phân tán và tạo cơ sở cho việc quản lý môi trường, đất đai tốt hơn. Từ góc độ gia đình, không gian được chăm sóc và tổ chức đồng bộ có thể giảm bớt gánh nặng duy tu riêng lẻ, đồng thời tạo một nơi tưởng niệm trang trọng hơn. Tuy nhiên, khi lựa chọn, gia đình vẫn cần tìm hiểu kỹ hồ sơ pháp lý, quy hoạch, loại hình sản phẩm, chính sách dịch vụ và tiến độ thực tế.</p>
-          <p>Thiên Phúc Vĩnh Hằng Viên được định hướng đáp ứng nhu cầu đó tại Uông Bí – Yên Tử và khu vực phía Tây Quảng Ninh. Quy mô dự án, định hướng sinh thái và việc đầu tư hạ tầng đồng bộ là những thông tin nền tảng để người quan tâm tiếp tục tìm hiểu sâu hơn trước khi đưa ra quyết định phù hợp với nhu cầu gia đình.</p>
-
-          <h2>Thông tin nên tìm hiểu trước khi lựa chọn nơi an nghỉ</h2>
-          <p>Mỗi gia đình có nhu cầu khác nhau về hình thức an táng, quy mô khuôn viên và cách thức tưởng niệm. Vì vậy, trước khi lựa chọn, nên xác định rõ nhu cầu sử dụng hiện tại và dài hạn. Gia đình có thể tìm hiểu <Link href="/quy-hoach">quy hoạch tổng thể</Link>, vị trí các phân khu, hệ thống giao thông, cảnh quan, công trình chung và các loại hình được giới thiệu tại mục <Link href="/san-pham">Sản phẩm</Link>.</p>
-          <p>Bên cạnh đó, việc khảo sát thực tế là bước quan trọng. Hình ảnh trên website giúp hình dung ban đầu nhưng không thay thế cho việc trực tiếp quan sát địa hình, đường tiếp cận và tiến độ thi công. Nếu cần trao đổi trước khi đi khảo sát, người quan tâm có thể liên hệ hotline để được cung cấp thông tin phù hợp với thời điểm hiện tại.</p>
-          <p>Website không nên được xem là tài liệu thay thế hồ sơ pháp lý hay văn bản của cơ quan có thẩm quyền. Các thông số quan trọng về dự án được trình bày dựa trên nguồn công bố của địa phương và dữ liệu dự án; những nội dung có thể thay đổi theo quá trình triển khai sẽ được cập nhật khi có thông tin mới.</p>
-
-          <h2>Thiên Phúc Vĩnh Hằng Viên hướng tới giá trị bền vững cho nhiều thế hệ</h2>
-          <p>Một nơi an nghỉ bền vững cần nhiều hơn một vị trí đẹp. Đó là sự kết hợp giữa quy hoạch có tầm nhìn, hạ tầng được đầu tư, cảnh quan được duy trì, môi trường được kiểm soát và cách vận hành tôn trọng giá trị văn hóa. Những yếu tố này quyết định chất lượng không gian không chỉ ở thời điểm hoàn thành mà còn trong nhiều năm sau đó.</p>
-          <p>Với quy mô 32,54 ha và tổng mức đầu tư khoảng 451 tỷ đồng, Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên đang được triển khai theo định hướng nghĩa trang tập trung, hiện đại và sinh thái. Vị trí Uông Bí – Yên Tử tạo nên bối cảnh riêng cho dự án, nơi cảnh quan thiên nhiên và đời sống tâm linh có mối liên hệ sâu sắc.</p>
-          <p>Trong hành trình phát triển, giá trị quan trọng nhất vẫn là xây dựng một không gian đủ trang nghiêm để tưởng nhớ người đã khuất, đủ thuận tiện để người thân trở về thăm viếng và đủ bền vững để gìn giữ ký ức gia đình qua nhiều thế hệ. Đó cũng là định hướng mà Thiên Phúc Vĩnh Hằng Viên hướng tới khi từng bước hoàn thiện tại Quảng Ninh.</p>
-        </div></section>
-
-        {photos.length > 1 && <section className="section soft"><div className="shell"><div className="section-head"><span className="eyebrow">Hình ảnh dự án</span><h2 className="section-title">Kiến trúc và cảnh quan Thiên Phúc Vĩnh Hằng Viên</h2><p>Hình ảnh được lấy trực tiếp từ thư viện dự án đang quản lý trên website.</p></div><div className="gallery-grid">{photos.slice(1, 9).map((p, i) => <figure key={p.id} className="gallery-item"><Image src={p.url} alt={`Kiến trúc và cảnh quan Công viên nghĩa trang Thiên Phúc Vĩnh Hằng Viên ${i + 2}`} fill sizes="(max-width: 700px) 100vw, 25vw" style={{ objectFit: "cover" }} /></figure>)}</div></div></section>}
-
-        <section className="section"><div className="shell"><div className="quote-panel"><span className="eyebrow">Tìm hiểu dự án</span><h2>Nhận thông tin Thiên Phúc Vĩnh Hằng Viên</h2><p>Để tìm hiểu vị trí, quy hoạch, sản phẩm và lịch khảo sát dự án tại Uông Bí – Yên Tử, vui lòng liên hệ trực tiếp để nhận thông tin cập nhật.</p><div style={{display:"flex",gap:12,flexWrap:"wrap",marginTop:20}}><a className="btn primary" href="tel:0976074385">Gọi 0976 074 385</a><Link className="btn ghost" href="/lien-he">Liên hệ tư vấn</Link></div></div></div></section>
-      </article>
-    </main>
-  );
+   <section className="about-cta"><div className="shell"><div><span className="eyebrow">Tìm hiểu dự án</span><h2>Tham quan và tìm hiểu Thiên Phúc Vĩnh Hằng Viên</h2><p>Nếu gia đình cần tìm hiểu vị trí, quy hoạch, sản phẩm hoặc tiến độ thực tế, hãy liên hệ để được cung cấp thông tin phù hợp trước khi đưa ra quyết định dài hạn.</p></div><div className="about-cta-actions"><a href="tel:0976074385">Gọi 0976 074 385</a><Link href="/lien-he">Liên hệ tư vấn</Link></div></div></section>
+  </article>
+  <style>{`
+   .about-article{background:#fffdf8;color:#28463b}.about-intro,.about-block,.about-gallery-section{padding:76px 0}.about-intro-grid,.about-split{display:grid;grid-template-columns:1fr 1fr;gap:58px;align-items:center}.about-intro h1,.about-reading h2,.about-section-head h2,.about-cta h2{font-family:var(--font-display),serif;color:#174b39;line-height:1.08;letter-spacing:-.02em}.about-intro h1{font-size:clamp(38px,4vw,56px);margin:12px 0 22px}.about-reading h2,.about-section-head h2{font-size:clamp(32px,3vw,44px);margin:10px 0 24px}.about-lead{font-size:19px!important;line-height:1.75!important}.about-intro p,.about-reading p{font-size:16px;line-height:1.9;color:#53665e;margin:0 0 18px}.about-reading{max-width:880px;margin:auto}.about-reading.compact{max-width:none}.about-soft{background:#f5f1e6}.about-green{background:#154b38;color:#fff}.about-green .eyebrow{color:#e8bf6a}.about-green h2{color:#fff}.about-green p{color:#e0ebe6}.about-photo{position:relative;height:430px;margin:0;border-radius:18px;overflow:hidden;box-shadow:0 16px 40px rgba(25,63,49,.12)}.about-photo-wide{height:500px;margin:38px 0}.about-photo figcaption{position:absolute;left:0;right:0;bottom:0;padding:35px 18px 14px;background:linear-gradient(transparent,rgba(10,38,28,.75));color:#fff;font-size:12px}.about-stats{background:#174b39;padding:30px 0}.about-stat-grid{display:grid;grid-template-columns:repeat(4,1fr)}.about-stat-grid div{text-align:center;padding:12px 20px;border-right:1px solid rgba(255,255,255,.18)}.about-stat-grid div:last-child{border:0}.about-stat-grid strong{display:block;font-family:var(--font-display),serif;color:#e7bf6b;font-size:30px}.about-stat-grid span{display:block;color:#e2ece7;font-size:12px;margin-top:5px}.about-callout{margin-top:30px;padding:25px 28px;border-left:4px solid #c2913c;background:#f5f0e4}.about-callout strong{color:#174b39}.about-callout p{margin:5px 0 0}.about-link{display:inline-block;margin-top:8px;color:#a87525;font-weight:700}.about-gallery-section{padding-top:68px}.about-section-head{max-width:720px;margin-bottom:28px}.about-section-head p{color:#66766f;line-height:1.7}.about-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.about-gallery .about-photo{height:310px}.about-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.about-links a{padding:11px 17px;border:1px solid #174b39;border-radius:5px;color:#174b39;font-size:13px;font-weight:700}.about-cta{padding:64px 0;background:#eee5d2}.about-cta>.shell{display:grid;grid-template-columns:1fr auto;gap:50px;align-items:center}.about-cta h2{font-size:38px;margin:8px 0 12px}.about-cta p{max-width:760px;color:#596b63;line-height:1.75}.about-cta-actions{display:flex;gap:10px;flex-direction:column}.about-cta-actions a{padding:13px 22px;border-radius:5px;background:#174b39;color:#fff;text-align:center;font-size:13px;font-weight:700}.about-cta-actions a:last-child{background:#b88431}.eyebrow{color:#a87525;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:11px}
+   @media(max-width:900px){.about-intro,.about-block,.about-gallery-section{padding:55px 0}.about-intro-grid,.about-split{grid-template-columns:1fr;gap:32px}.about-photo{height:350px}.about-photo-wide{height:400px}.about-stat-grid{grid-template-columns:1fr 1fr}.about-stat-grid div:nth-child(2){border-right:0}.about-gallery{grid-template-columns:1fr 1fr}.about-cta>.shell{grid-template-columns:1fr}.about-cta-actions{flex-direction:row}}
+   @media(max-width:600px){.about-intro,.about-block,.about-gallery-section{padding:44px 0}.about-intro h1{font-size:37px}.about-reading h2,.about-section-head h2{font-size:31px}.about-intro p,.about-reading p{font-size:15px;line-height:1.82}.about-lead{font-size:17px!important}.about-photo,.about-photo-wide{height:285px;margin-top:24px}.about-stat-grid strong{font-size:23px}.about-stat-grid span{font-size:10px}.about-gallery{grid-template-columns:1fr}.about-gallery .about-photo{height:280px}.about-cta h2{font-size:31px}.about-cta-actions{flex-direction:column}}
+  `}</style>
+ </main>
 }
