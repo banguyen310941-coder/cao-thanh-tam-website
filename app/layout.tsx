@@ -11,6 +11,7 @@ import "./home-fixes.css";
 import "./home-reference.css";
 import "./readability-fixes.css";
 import "./home-readability.css";
+import "./home-redesign.css";
 
 const display = Cormorant_Garamond({ subsets: ["latin", "vietnamese"], variable: "--font-display", weight: ["500", "600", "700"] });
 const sans = Be_Vietnam_Pro({ subsets: ["latin", "vietnamese"], variable: "--font-sans", weight: ["300", "400", "500", "600", "700"] });
