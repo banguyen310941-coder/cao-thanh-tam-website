@@ -16,6 +16,7 @@ import "./home-readability.css";
 import "./home-redesign.css";
 import "./hero-title.css";
 import "./home-final.css";
+import "./home-mobile.css";
 
 const sans = Be_Vietnam_Pro({ subsets: ["latin", "vietnamese"], variable: "--font-sans", weight: ["300", "400", "500", "600", "700"] });
 const display = Lora({ subsets: ["latin", "vietnamese"], variable: "--font-display", weight: ["400", "500", "600", "700"] });
