@@ -1,3 +1,4 @@
+import SeoEditorial from "@/components/SeoEditorial";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,5 +36,5 @@ export default async function LocationPage(){
    @media(max-width:900px){.location-intro-grid,.location-feature,.location-feature.reverse{grid-template-columns:1fr;gap:34px}.location-feature.reverse figure,.location-feature.reverse .location-feature-copy{order:initial}.location-main-image{min-height:440px}.location-intro-copy{max-width:720px}.location-summary-grid{grid-template-columns:1fr 1fr}.location-summary-grid>div:nth-child(2){border-right:0}.location-gallery{grid-template-columns:1fr 1fr}.location-cta-box{align-items:flex-start;flex-direction:column}.location-cta-actions{flex-wrap:wrap}}
    @media(max-width:600px){.location-readable-page{font-size:16px}.location-intro{padding:48px 0}.location-main-image{min-height:330px;border-radius:12px}.location-intro-copy h1{font-size:31px;line-height:1.3}.location-intro-copy p{font-size:16px;line-height:1.8}.location-intro-copy .location-lead{font-size:17px}.location-summary-grid>div{padding:21px 10px}.location-summary b{font-size:20px}.location-summary span{font-size:11px}.location-reading h2,.location-green-inner h2,.location-section-head h2{font-size:29px;line-height:1.35}.location-reading p,.location-green-inner p{font-size:16.5px;line-height:1.85}.location-feature-image{min-height:300px}.location-feature-copy h2{font-size:28px;line-height:1.35}.location-feature-copy p{font-size:16px;line-height:1.8}.location-gallery{grid-template-columns:1fr}.location-gallery figure>div{height:245px}.location-cta-box{padding:28px 22px}.location-cta h2{font-size:27px;line-height:1.35}.location-cta-actions{width:100%;flex-direction:column}.location-cta-actions .btn{width:100%;justify-content:center}}
   `}</style>
- </main>
+ <SeoEditorial page="vi-tri"/></main>
 }
