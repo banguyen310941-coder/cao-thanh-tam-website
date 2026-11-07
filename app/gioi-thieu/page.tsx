@@ -1,3 +1,4 @@
+import SeoEditorial from "@/components/SeoEditorial";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -51,5 +52,5 @@ export default async function AboutPage(){
    @media(max-width:900px){.about-intro,.about-block,.about-gallery-section{padding:55px 0}.about-intro-grid,.about-split{grid-template-columns:1fr;gap:32px}.about-photo{height:350px}.about-photo-wide{height:400px}.about-stat-grid{grid-template-columns:1fr 1fr}.about-stat-grid div:nth-child(2){border-right:0}.about-gallery{grid-template-columns:1fr 1fr}.about-cta>.shell{grid-template-columns:1fr}.about-cta-actions{flex-direction:row}}
    @media(max-width:600px){.about-intro,.about-block,.about-gallery-section{padding:44px 0}.about-intro h1{font-size:37px}.about-reading h2,.about-section-head h2{font-size:31px}.about-intro p,.about-reading p{font-size:15px;line-height:1.82}.about-lead{font-size:17px!important}.about-photo,.about-photo-wide{height:285px;margin-top:24px}.about-stat-grid strong{font-size:23px}.about-stat-grid span{font-size:10px}.about-gallery{grid-template-columns:1fr}.about-gallery .about-photo{height:280px}.about-cta h2{font-size:31px}.about-cta-actions{flex-direction:column}}
   `}</style>
- </main>
+ <SeoEditorial page="gioi-thieu"/></main>
 }
