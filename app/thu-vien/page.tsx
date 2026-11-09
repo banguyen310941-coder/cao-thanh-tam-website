@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
 import InnerHero from "@/components/InnerHero";
 
-export const metadata: Metadata = { title: "Thư viện", description: "Thư viện hình ảnh định hướng của Cao Thanh Tâm." };
+const title = "Thư viện hình ảnh tham khảo";
+const description = "Thư viện hình ảnh tham khảo về cảnh quan và không gian xanh, dùng để thể hiện định hướng thiết kế. Đây chưa phải hình ảnh dự án chính thức.";
+const url = "https://www.hoavienthienphucvinhhang.com.vn/thu-vien";
+
+export const metadata: Metadata = {
+  title,
+  description,
+  alternates: { canonical: url },
+  robots: { index: true, follow: true },
+  openGraph: { title, description, url, type: "website", locale: "vi_VN" },
+};
 const images=[
   ["Cảnh quan xanh","https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=85"],
   ["Không gian yên tĩnh","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85"],
